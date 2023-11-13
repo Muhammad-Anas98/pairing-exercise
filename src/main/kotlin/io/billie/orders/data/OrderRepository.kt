@@ -21,24 +21,40 @@ class OrderRepository {
 
     @Transactional(readOnly = true)
     fun findOrderById(id: UUID): OrderResponse? {
-        return jdbcTemplate.queryForObject(
-                    "select * from organisations_schema.orders where id = ?",
-                    orderMapper(),
-                    id
-            )
+        return jdbcTemplate.queryForObject(orderQuery(id), orderMapper())
     }
 
     @Transactional
     fun updateOrder(order: OrderResponse) {
         jdbcTemplate.update(
-                "update organisations_schema.orders set items = ?, total_amount = ?, shipped = ?, shipments = ? where id = ?",
-                order.items,
+                "update organisations_schema.orders set items = ?, total_amount = ?, shipped = ? where id = ?",
+                order.orderItems,
                 order.totalAmount,
                 order.shipped,
-                order.shipments,
                 order.id
         )
     }
+
+    private fun orderQuery(id: UUID) = "SELECT" +
+            "o.id , " +
+            "o.total_amount, " +
+            "o.shipped, " +
+            "i.id as item_id, " +
+            "i.item_name, " +
+            "i.quantity " +
+            "i.price, " +
+            "s.id as shipment_id, " +
+            "s.shipment_date, " +
+            "s.organization_id, " +
+            "s.shipment_amount, " +
+            "s.shipped_items, " +
+            " FROM " +
+            "organisations_schema.orders o " +
+            "INNER JOIN organisations_schema.order_items oi ON oi.order_id::uuid = o.id::uuid " +
+            "INNER JOIN organisations_schema.items i ON oi.item_id::uuid = i.id::uuid " +
+            "INNER JOIN organisations_schema.shipments s ON o.id::uuid = s.order_id::uuid " +
+            "WHERE " +
+            "o.id = "+ id
 
     private fun orderMapper() = RowMapper<OrderResponse> { it: ResultSet, _: Int ->
         OrderResponse(
@@ -70,7 +86,8 @@ class OrderRepository {
                     Date(it.getDate("shipment_date").time).toLocalDate(),
                     UUID.fromString(it.getString("organization_id")),
                     mapShippedItems(it),
-                    it.getDouble("shipment_amount")
+                    it.getDouble("shipment_amount"),
+                    UUID.fromString(it.getString("order_id"))
             ))
         }
         return shipments;
