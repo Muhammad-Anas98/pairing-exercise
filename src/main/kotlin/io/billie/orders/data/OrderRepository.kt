@@ -27,7 +27,7 @@ class OrderRepository {
     @Transactional
     fun updateOrder(order: OrderResponse) {
         jdbcTemplate.update(
-                "update organisations_schema.orders set items = ?, total_amount = ?, shipped = ? where id = ?",
+                "update organisations_schema.orders shipped = ? where id = ?",
                 order.orderItems,
                 order.totalAmount,
                 order.shipped,
