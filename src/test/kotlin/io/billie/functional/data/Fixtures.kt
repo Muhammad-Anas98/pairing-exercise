@@ -1,5 +1,7 @@
 package io.billie.functional.data
 
+import io.billie.orders.model.ShipmentNotificationRequest
+import io.billie.orders.model.ShippedItem
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
@@ -147,6 +149,34 @@ object Fixtures {
         return data
     }
 
+    fun shipmentRequestWithShippedItems(orderId: String, entityId: String): ShipmentNotificationRequest {
+        return ShipmentNotificationRequest(
+                orderId = orderId,
+                entityId = entityId,
+                shipmentAmount = 100.0,
+                shippedItems = listOf(ShippedItem(itemId = UUID.randomUUID(), quantity = 5))
+        )
+    }
 
+
+    fun shipmentRequestWithEmptyShippedItems(orderId: UUID, entityId: UUID, amount: Double): ShipmentNotificationRequest {
+        return ShipmentNotificationRequest(
+                orderId = orderId.toString(),
+                entityId = entityId.toString(),
+                shipmentAmount = amount,
+                shippedItems = null)
+    }
+
+    fun existedDummyOrderId(): UUID {
+        return UUID.fromString("962b8b48-7d64-4136-9408-8c31d9da13a2")
+    }
+
+    fun notExistedDummyOrderId(): UUID {
+        return UUID.fromString("962b8b48-7d64-4136-9408-8c31daaaaaaa")
+    }
+
+    fun notExistedDummyOrgId(): UUID {
+        return UUID.fromString("962b8b48-7d64-4136-9408-8c31d9da13a2")
+    }
 
 }

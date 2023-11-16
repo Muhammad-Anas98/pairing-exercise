@@ -1,5 +1,31 @@
 Pair Programming Exercise for Billie
 =============
+![Project Logo](./class_diagram.png)
+
+## Implementation summary
+
+1. **Notify Shipment API:**
+    - Implemented the `notify-shipment` API to handle shipment notifications.
+
+2. **End-to-End Order and Item Logic:**
+    - Added comprehensive logic for handling orders and items from creation to fulfillment.
+    - Incorporated dummy data for end-to-end testing to simulate realistic scenarios.
+
+3. **Shipment Logic:**
+    - Implemented logic for managing and processing shipments.
+
+4. **New Tables:**
+    - Added new database tables to support the extended functionality.
+
+5. **Migration Files:**
+    - Included migration files for updating the database schema with new tables and changes.
+
+6. **Tests:**
+    - Added tests to ensure the correctness and reliability of the implemented features.
+   
+=====================================================================================================================
+
+
 ### The Requirements
 
 The way a business like Billie works is this:
