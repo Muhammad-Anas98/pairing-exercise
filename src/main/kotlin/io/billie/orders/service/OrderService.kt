@@ -5,6 +5,7 @@ import io.billie.orders.data.ShipmentNotificationException
 import io.billie.orders.model.*
 import io.billie.organisations.data.OrganisationRepository
 import io.billie.organisations.viewmodel.OrganisationResponse
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.util.*
@@ -12,9 +13,10 @@ import java.util.*
 @Service
 class OrderService(val orgDb: OrganisationRepository, val orderDb: OrderRepository) {
 
+    @Async
     fun processShipmentNotification(request: ShipmentNotificationRequest) {
-        val order = findAndValidateOrderForShipment(request.orderId)
-        val organization = findAndValidateOrganization(request.entityId)
+        val order = findAndValidateOrderForShipment(UUID.fromString(request.orderId))
+        val organization = findAndValidateOrganization(UUID.fromString(request.entityId))
 
         validateShipmentsAmount(order, request)
 
@@ -25,8 +27,8 @@ class OrderService(val orgDb: OrganisationRepository, val orderDb: OrderReposito
 
         // Update the order status to shipped if the amount satisfies
         // (as shipped items is not required field in the request as per the requirement we can assume that items quantity satisfies)
-        order.shipped = (request.shipmentAmount + cumulatePreviousShipmentsAmount(order)) == order.totalAmount
-        orderDb.updateOrder(order)
+        order.shipped = cumulatePreviousShipmentsAmount(order) == order.totalAmount
+        orderDb.update(order, shipment)
     }
 
     private fun findAndValidateOrderForShipment(orderId: UUID): OrderResponse {
@@ -36,6 +38,12 @@ class OrderService(val orgDb: OrganisationRepository, val orderDb: OrderReposito
         if (order.shipped) {
             throw ShipmentNotificationException("Order is already shipped")
         }
+
+        val shipments = orderDb.getShipments(orderId)
+        if (shipments != null) {
+            order.shipments = shipments
+        }
+
         return order
     }
 
@@ -60,12 +68,12 @@ class OrderService(val orgDb: OrganisationRepository, val orderDb: OrderReposito
                 shipmentDate = shipmentDate,
                 organizationId = organization.id,
                 shipmentAmount = request.shipmentAmount,
-                orderId = request.orderId
+                orderId = UUID.fromString(request.orderId)
         )
     }
 
     private fun populateAndValidateShippedItemsIfProvided(order: OrderResponse, shipment: Shipment, request: ShipmentNotificationRequest) {
-        if (request.shippedItems.isEmpty()) {
+        if (request.shippedItems.isNullOrEmpty() || order.shipments.isEmpty()) {
             return
         }
 
@@ -82,6 +90,7 @@ class OrderService(val orgDb: OrganisationRepository, val orderDb: OrderReposito
             // Track the shipped item
             shipment.shippedItems.add(ShippedItem(item.id, shippedItemRequest.quantity))
         }
+
     }
 
     private fun cumulatePreviousShipmentsAmount(order: OrderResponse): Double {

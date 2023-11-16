@@ -22,8 +22,16 @@ import javax.validation.Valid
 @RequestMapping("orders")
 class OrderResource(val service: OrderService) {
 
+    @ApiResponses(
+            value = [
+                ApiResponse(
+                        responseCode = "202",
+                        description = "Accepted the order shipment notification"
+                ),
+                ApiResponse(responseCode = "400", description = "Bad request", content = [Content()])
+            ]
+    )
     @PostMapping("/notify-shipment")
-    @ResponseStatus(HttpStatus.ACCEPTED)
     fun post(@Valid @RequestBody shipmentNotification: ShipmentNotificationRequest) {
         try {
             service.processShipmentNotification(shipmentNotification)

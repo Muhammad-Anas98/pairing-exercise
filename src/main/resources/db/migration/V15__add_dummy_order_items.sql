@@ -1,0 +1,3 @@
+INSERT INTO organisations_schema.order_items (order_id, item_id) values ('962b8b48-7d64-4136-9408-8c31d9da13a2', 'a0b0c0d0-7d64-4136-9408-8c31d9da13a3');
+INSERT INTO organisations_schema.order_items (order_id, item_id) values ('962b8b48-7d64-4136-9408-8c31d9da13a2', 'a0b0c0d0-7d64-4136-9408-8c31d9da13a4');
+INSERT INTO organisations_schema.order_items (order_id, item_id) values ('962b8b48-7d64-4136-9408-8c31d9da13a2', 'a0b0c0d0-7d64-4136-9408-8c31d9da13a5');

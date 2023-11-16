@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import io.billie.orders.util.ShippedItemsDeserializer
+import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDate
 import java.util.*
-
 data class Shipment(
         val id: UUID,
         @JsonFormat(pattern = "dd/MM/yyyy")

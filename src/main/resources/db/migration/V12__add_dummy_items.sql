@@ -1,0 +1,3 @@
+insert into organisations_schema.items (id, item_name, quantity, price) VALUES ('a0b0c0d0-7d64-4136-9408-8c31d9da13a3' ,'Item 10', 5, 20.0);
+insert into organisations_schema.items (id, item_name, quantity, price) VALUES ('a0b0c0d0-7d64-4136-9408-8c31d9da13a4' ,'Item 11', 6, 21.0);
+insert into organisations_schema.items (id, item_name, quantity, price) VALUES ('a0b0c0d0-7d64-4136-9408-8c31d9da13a5' ,'Item 12', 7, 22.0);
